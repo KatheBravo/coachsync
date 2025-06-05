@@ -1,13 +1,24 @@
-import React from 'react';
-import { Paper, Typography, Box } from '@mui/material';
+// src/components/CoachInfo.jsx
+import { createContext, useContext, useState } from 'react';
 
-export default function CoachInfo({ coachId }) {
+const CoachContext = createContext();
+
+export const CoachProvider = ({ children }) => {
+  const [coachId, setCoachId] = useState('');
+  const [clients, setClients] = useState([]);
+
   return (
-    <Paper elevation={3} sx={{ p: 3, backgroundColor: '#f5f5f5' }}>
-      <Typography variant="h6">Coach ID: {coachId}</Typography>
-      <Typography variant="body1" color="text.secondary" mt={1}>
-        Información general del coach mostrada aquí.
-      </Typography>
-    </Paper>
+    <CoachContext.Provider value={{ coachId, setCoachId, clients, setClients }}>
+      {children}
+    </CoachContext.Provider>
   );
-}
+};
+
+export const useCoach = () => {
+  const context = useContext(CoachContext);
+  console.log('useCoach context:', context);
+  if (!context) {
+    throw new Error('useCoach debe usarse dentro de CoachProvider');
+  }
+  return context;
+};

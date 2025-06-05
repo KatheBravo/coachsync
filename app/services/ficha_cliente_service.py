@@ -9,9 +9,7 @@ class FichaClienteService:
         self.repository = FichaClienteRepository(db)
 
     async def crear_ficha(self, ficha_data: ficha_cliente_schema.FichaClienteCreate):
-        ficha_dict = ficha_data
-        ficha_dict["cliente_id"] = ficha_data.cliente_id
-        return await self.repository.create_ficha(ficha_dict)
+        return await self.repository.create_ficha(ficha_data)
 
     async def obtener_ficha_por_cliente(self, cliente_id: str):
         ficha = await self.repository.get_by_cliente_id(cliente_id)

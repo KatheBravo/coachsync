@@ -28,7 +28,7 @@ class FichaClienteRepository:
         return None
 
     async def create_ficha(self, ficha_data: FichaClienteCreate):
-        ficha_dict = ficha_data
+        ficha_dict = ficha_data.dict()
         result = await self.collection.insert_one(ficha_dict)
         ficha_dict["_id"] = str(result.inserted_id)
 

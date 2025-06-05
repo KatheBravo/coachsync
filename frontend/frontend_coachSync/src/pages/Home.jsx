@@ -1,30 +1,74 @@
-import { Box, Typography, Button, Container } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+// src/pages/Home.jsx
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCoach } from '../components/CoachInfo'; //
 
-const Home = () => {
-  const navigate = useNavigate();
+// MUI
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Box
+} from '@mui/material';
+
+function Home() {
+  const [id, setId] = useState(''); //
+  const navigate = useNavigate(); //
+  const { setCoachId, setClients } = useCoach(); //
+
+  const handleLogin = async () => {
+    try {
+      // Adjusted the API endpoint based on the provided backend endpoints for fetching clients by coach_id.
+      // The original code used '/api/v1/users/coach/${id}/clients' which matches the provided endpoint structure.
+      const res = await fetch(`http://127.0.0.1:8000/api/v1/users/coach/${id}/clients`); //
+      if (!res.ok) throw new Error('Coach no encontrado'); //
+      const data = await res.json(); //
+      setCoachId(id); //
+      setClients(data); //
+      navigate('/clientes'); //
+    } catch (err) {
+      alert(err.message); //
+    }
+  };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 10 }}>
-      <Box textAlign="center">
-        <Typography variant="h3" gutterBottom>
-          Bienvenido a tu plataforma Fitness
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ padding: 4, marginTop: 10 }}>
+        <Typography variant="h5" align="center" gutterBottom>
+          Bienvenido Coach
         </Typography>
-        <Typography variant="h6" color="text.secondary" paragraph>
-          Gestiona clientes, registra progresos y controla el historial de entrenamientos desde un solo lugar.
-        </Typography>
-        <Box mt={4}>
+        <Box
+          component="form"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            mt: 2
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            label="Ingresa tu ID"
+            variant="outlined"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            fullWidth
+          />
           <Button
             variant="contained"
-            size="large"
-            onClick={() => navigate("/clientes")}
+            color="primary"
+            onClick={handleLogin}
+            disabled={!id.trim()}
           >
-            Ver clientes
+            Ingresar
           </Button>
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
-};
+}
 
 export default Home;
